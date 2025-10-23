@@ -10,6 +10,12 @@ spring:
       
 app:
   chroma:
+    enabled: false
     url: http://localhost:8000
     collection-name: documents
     embedding-dimension: 384
+
+logging:
+  level:
+    org.springframework.ai.chroma: DEBUG
+    org.springframework.web.client: DEBUG
