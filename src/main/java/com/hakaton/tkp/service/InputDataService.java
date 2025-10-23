@@ -24,17 +24,16 @@ public class InputDataService {
 
     public ResponseEntity<?> parseFile(MultipartFile file){
         try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(file.getInputStream()))){
-            String line;
+            String line = bufferedReader.readLine();
             while ((line = bufferedReader.readLine()) != null) {
                 String id = UUID.randomUUID().toString();
-                List<Byte> embedding = embeddingService.generateEmbedding(line);
+                List<Byte> embedding = embeddingService.generateEmbeddingBytes(line);
                 EmbeddingRecord record = new EmbeddingRecord(id, line, embedding);
                 saveRecordsService.saveRecord(record, id);
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-
         return ResponseEntity.ok().build();
     }
 }

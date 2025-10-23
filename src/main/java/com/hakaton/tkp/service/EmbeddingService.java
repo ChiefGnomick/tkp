@@ -5,6 +5,7 @@ import org.springframework.ai.embedding.EmbeddingResponse;
 import org.springframework.stereotype.Service;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -54,19 +55,29 @@ public class EmbeddingService {
         return embeddingDimension;
     }
 
-    public byte[] generateEmbeddingBytes(String text) {
+    public List<Byte> generateEmbeddingBytes(String text) {
         List<Float> embedding = generateEmbedding(text);
         ByteBuffer buffer = ByteBuffer.allocate(embedding.size() * Float.BYTES);
         embedding.forEach(buffer::putFloat);
-        return buffer.array();
+        byte[] byteArray = buffer.array();
+        List<Byte> byteList = new ArrayList<>();
+        for (byte b : byteArray) {
+            byteList.add(b);
+        }
+        return byteList;
     }
 
-    public List<byte[]> generateEmbeddingsBytes(List<String> texts) {
+    public List<List<Byte>> generateEmbeddingsBytes(List<String> texts) {
         List<List<Float>> embeddings = generateEmbeddings(texts);
         return embeddings.stream().map(embedding -> {
             ByteBuffer buffer = ByteBuffer.allocate(embedding.size() * Float.BYTES);
             embedding.forEach(buffer::putFloat);
-            return buffer.array();
+            byte[] byteArray = buffer.array();
+            List<Byte> byteList = new ArrayList<>();
+            for (byte b : byteArray) {
+                byteList.add(b);
+            }
+            return byteList;
         }).collect(Collectors.toList());
     }
 }

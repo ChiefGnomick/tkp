@@ -18,15 +18,9 @@ public class EmbeddingController {
 
     @GetMapping("/add")
     public String addTextEmbedding(@RequestParam String text) {
-        // 1. Генерируем эмбеддинг
-        List<Float> embedding = embeddingService.generateEmbedding(text);
-
-        // 2. Формируем уникальный ключ
+        List<Byte> embedding = embeddingService.generateEmbeddingBytes(text);
         String id = UUID.randomUUID().toString();
-
-        // 3. Сохраняем в Redis
         redisTemplate.opsForHash().put("embeddings", id, new EmbeddingRecord(id, text, embedding));
-
         return "✅ Добавлено: " + id;
     }
 
@@ -35,5 +29,5 @@ public class EmbeddingController {
         return redisTemplate.opsForHash().values("embeddings");
     }
 
-    public record EmbeddingRecord(String id, String text, List<Float> embedding) {}
+    public record EmbeddingRecord(String id, String text, List<Byte> embedding) {}
 }
