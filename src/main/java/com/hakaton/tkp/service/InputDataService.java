@@ -14,13 +14,13 @@ import com.hakaton.tkp.controller.EmbeddingController.EmbeddingRecord;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 @Service
-@AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class InputDataService {
-    private EmbeddingService embeddingService;
-    private SaveRecordsService saveRecordsService;
+    private final EmbeddingService embeddingService;
+    private final SaveRecordsService saveRecordsService;
 
     public ResponseEntity<?> parseFile(MultipartFile file){
         try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(file.getInputStream()))){
@@ -32,7 +32,7 @@ public class InputDataService {
                 saveRecordsService.saveRecord(record, id);
             }
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.toString());
         }
         return ResponseEntity.ok().build();
     }
