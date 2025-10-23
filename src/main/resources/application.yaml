@@ -7,3 +7,9 @@ spring:
       chat:
         options:
           model: qwen3:4b
+      
+app:
+  chroma:
+    url: http://localhost:8000
+    collection-name: documents
+    embedding-dimension: 384
