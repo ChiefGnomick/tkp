@@ -1,50 +1,39 @@
 package com.hakaton.tkp.controller;
 
 import com.hakaton.tkp.service.EmbeddingService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/embedding")
+@RequiredArgsConstructor
 public class EmbeddingController {
 
     private final EmbeddingService embeddingService;
+    private final RedisTemplate<String, Object> redisTemplate;
 
-    public EmbeddingController(EmbeddingService embeddingService) {
-        this.embeddingService = embeddingService;
-    }
-
-    @GetMapping("/single")
-    public Map<String, Object> generateEmbedding(@RequestParam String text) {
+    @GetMapping("/add")
+    public String addTextEmbedding(@RequestParam String text) {
+        // 1. Генерируем эмбеддинг
         List<Float> embedding = embeddingService.generateEmbedding(text);
-        
-        return Map.of(
-            "text", text,
-            "embedding_size", embedding.size(),
-            "embedding_sample", embedding.subList(0, Math.min(5, embedding.size())),
-            "message", "Эмбеддинг успешно создан"
-        );
+
+        // 2. Формируем уникальный ключ
+        String id = UUID.randomUUID().toString();
+
+        // 3. Сохраняем в Redis
+        redisTemplate.opsForHash().put("embeddings", id, new EmbeddingRecord(id, text, embedding));
+
+        return "✅ Добавлено: " + id;
     }
 
-    @PostMapping("/batch")
-    public Map<String, Object> generateEmbeddings(@RequestBody Map<String, List<String>> request) {
-        List<String> texts = request.get("texts");
-        List<List<Float>> embeddings = embeddingService.generateEmbeddings(texts);
-        
-        return Map.of(
-            "texts_count", texts.size(),
-            "embeddings_count", embeddings.size(),
-            "embedding_dimension", embeddingService.getEmbeddingDimension(),
-            "embeddings", embeddings
-        );
+    @GetMapping("/all")
+    public Object getAllEmbeddings() {
+        return redisTemplate.opsForHash().values("embeddings");
     }
 
-    @GetMapping("/dimension")
-    public Map<String, Object> getDimension() {
-        return Map.of(
-            "embedding_dimension", embeddingService.getEmbeddingDimension()
-        );
-    }
+    public record EmbeddingRecord(String id, String text, List<Float> embedding) {}
 }

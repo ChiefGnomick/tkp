@@ -31,4 +31,5 @@ public class ChatController {
         log.info("AI Response: {}", response);
         return response;
     }
+
 }

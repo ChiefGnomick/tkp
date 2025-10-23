@@ -1,4 +1,4 @@
-package com.hakaton.tkp.Config;
+package com.hakaton.tkp.config;
 
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.ChatModel;
