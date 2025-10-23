@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: tkp
+  ai:
+    ollama:
+      base-url: http://10.96.64.54:11434
+      chat:
+        options:
+          model: qwen3:4b
