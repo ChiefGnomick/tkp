@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class SaveRecordsService {
-    private static RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     public void saveRecord(EmbeddingRecord record, String id){
         redisTemplate.opsForHash().put("embeddings", id, record);
