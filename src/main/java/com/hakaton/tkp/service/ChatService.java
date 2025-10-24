@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ChatService {
 
     private final ChatClient chatClient;
-    private final MaterialClient materialClient;
+    private MaterialClient materialClient = new MaterialClient();
 
     public String sendPromptWithRAG(String userPrompt) {
         String ragContext = JsonParser.parseNamesToString(materialClient.searchMaterials(userPrompt, 5));

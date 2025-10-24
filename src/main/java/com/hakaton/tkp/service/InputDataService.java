@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class InputDataService {
 
-    private final MaterialClient materialClient;
+    private  MaterialClient materialClient = new MaterialClient();
 
     public ResponseEntity<?> parseFile(MultipartFile file){
         try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(file.getInputStream()))){
