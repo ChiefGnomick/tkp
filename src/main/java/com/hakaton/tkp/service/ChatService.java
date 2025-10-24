@@ -2,19 +2,21 @@ package com.hakaton.tkp.service;
 
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
+
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class ChatService {
 
     private final ChatClient chatClient;
+    private final MaterialClient materialClient;
 
-    public ChatService(ChatClient chatClient) {
-        this.chatClient = chatClient;
-    }
+    public String sendPromptWithRAG(String userPrompt) {
+        String ragContext = materialClient.searchMaterials(userPrompt, 3).toString();
 
-    public String sendPromptWithRAG(String userPrompt, String ragContext) {
         log.info("Received user prompt: {}", userPrompt);
         log.info("RAG context: {}", ragContext);
         
@@ -69,8 +71,8 @@ public class ChatService {
             """, llmResponse);
     }
 
-    public String processPromptWithRAGAndExtractJson(String userPrompt, String ragContext) {
-        String llmResponse = sendPromptWithRAG(userPrompt, ragContext);
+    public String processPromptWithRAGAndExtractJson(String userPrompt) {
+        String llmResponse = sendPromptWithRAG(userPrompt);
         return extractJsonFromResponse(llmResponse);
     }
 }
