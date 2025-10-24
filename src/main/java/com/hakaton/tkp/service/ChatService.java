@@ -3,6 +3,8 @@ package com.hakaton.tkp.service;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
 
+import com.hakaton.tkp.util.JsonParser;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -15,7 +17,7 @@ public class ChatService {
     private final MaterialClient materialClient;
 
     public String sendPromptWithRAG(String userPrompt) {
-        String ragContext = materialClient.searchMaterials(userPrompt, 3).toString();
+        String ragContext = JsonParser.parseNamesToString(materialClient.searchMaterials(userPrompt, 5));
 
         log.info("Received user prompt: {}", userPrompt);
         log.info("RAG context: {}", ragContext);
